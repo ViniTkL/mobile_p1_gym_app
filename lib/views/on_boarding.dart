@@ -34,7 +34,7 @@ class _OnBoardingState extends State<OnBoarding> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Durations.long4, () {
+    Future.delayed(Durations.extralong4, () {
       setState(() {
         indexImage++;
       });
@@ -59,10 +59,12 @@ class _OnBoardingState extends State<OnBoarding> {
               SizedBox(
                 height: 20,
               ),
-              Button(
-                  function: () => nextImage(),
-                  text: indexImage == 3 ? 'Get Started' : 'Next',
-                  isTransparent: true),
+              indexImage > 0
+                  ? Button(
+                      function: () => nextImage(),
+                      text: indexImage == 3 ? 'Get Started' : 'Next',
+                      isTransparent: true)
+                  : Text(''),
             ],
           )),
     ));

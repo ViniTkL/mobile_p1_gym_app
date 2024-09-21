@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class SetPasswordForm extends StatefulWidget {
+  const SetPasswordForm({super.key});
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  State<SetPasswordForm> createState() => _SetPasswordFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
-  TextEditingController email = TextEditingController(text: '');
+class _SetPasswordFormState extends State<SetPasswordForm> {
   TextEditingController password = TextEditingController(text: '');
+  TextEditingController confirmPassword = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width ,
+      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(color: Color.fromRGBO(179, 160, 255, 1)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -22,34 +22,39 @@ class _LoginFormState extends State<LoginForm> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Username or email',
+              'Password',
               textAlign: TextAlign.end,
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
             ),
             TextField(
-              controller: email,
+              controller: password,
               decoration: InputDecoration(
-                  hintText: 'example@example.com',
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: InputBorder.none,),
+                hintText: '*************',
+                fillColor: Colors.white,
+                filled: true,
+                border: InputBorder.none,
+              ),
             ),
             SizedBox(
               height: 20,
             ),
             Text(
-              'Password',
+              'Confirm Password',
+              textAlign: TextAlign.end,
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
             ),
             TextField(
-              controller: password,
-              obscureText: true,
+              controller: confirmPassword,
               decoration: InputDecoration(
-                  hintText: '*************',
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: InputBorder.none),
-            )
+                hintText: '*************',
+                fillColor: Colors.white,
+                filled: true,
+                border: InputBorder.none,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),

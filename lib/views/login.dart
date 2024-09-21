@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:prova_p1_mobile/ui-components/auth_footer.dart';
+import 'package:prova_p1_mobile/ui-components/auth_header.dart';
 import 'package:prova_p1_mobile/ui-components/button.dart';
 import 'package:prova_p1_mobile/ui-components/login_form.dart';
 
@@ -11,6 +13,7 @@ class Login extends StatelessWidget {
     return MaterialApp(
       title: 'Material App',
       home: Scaffold(
+          resizeToAvoidBottomInset: true,
           backgroundColor: Color.fromRGBO(35, 35, 35, 1),
           appBar: AppBar(
             backgroundColor: Color.fromRGBO(35, 35, 35, 1),
@@ -32,53 +35,32 @@ class Login extends StatelessWidget {
                 )),
           ),
           body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              AuthHeader(
+                pageTitle: 'Welcome',
+                pageSubtitle:
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+              ),
               LoginForm(),
               SizedBox(
                 height: 20,
               ),
               Button(
-                  function: (_) => print('clicou'),
+                  function: () => print('clicou'),
                   text: 'Log in',
                   isTransparent: true),
               SizedBox(
                 height: 20,
               ),
-              Column(
-                children: [
-                  Text(
-                    'or sign up with',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset('assets/Fingerprint Icon.svg'),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      SvgPicture.asset('assets/Facebook Icon.svg'),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      SvgPicture.asset('assets/Google Icon.svg'),
-                    ],
-                  ),
-                  Text(
-                    'Don\'t have an account? Sign Up',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w300),
-                  ),
-                ],
-              )
+              AuthFooter(),
+              Text(
+                'Don\'t have an account? Sign Up',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300),
+              ),
             ],
           )),
     );
