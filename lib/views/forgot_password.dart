@@ -3,10 +3,39 @@ import 'package:prova_p1_mobile/ui-components/auth_footer.dart';
 import 'package:prova_p1_mobile/ui-components/auth_header.dart';
 import 'package:prova_p1_mobile/ui-components/button.dart';
 import 'package:prova_p1_mobile/ui-components/forgot_password_form.dart';
-import 'package:prova_p1_mobile/ui-components/sing_up_form.dart';
+import 'package:prova_p1_mobile/ui-components/form_input.dart';
+import 'package:prova_p1_mobile/utils/vailidators.dart';
+import 'package:prova_p1_mobile/views/set_password.dart';
 
 class ForgotPassword extends StatelessWidget {
-  const ForgotPassword({super.key});
+  TextEditingController email = TextEditingController(text: '');
+  ForgotPassword({super.key});
+
+  void continueToReset(context){
+    if(validEmail(email.text) && email.text.isNotEmpty){
+      Navigator.push(context,
+        MaterialPageRoute(builder: (context) => SetPassword()));
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('E-mail inválido'),
+          content: Text('Por favor, insira um email válido'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +64,7 @@ class ForgotPassword extends StatelessWidget {
               )),
         ),
         body: SizedBox(
-          height: MediaQuery.of(context).size.height*0.5,
+          height: MediaQuery.of(context).size.height * 0.5,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -50,12 +79,32 @@ class ForgotPassword extends StatelessWidget {
               SizedBox(
                 height: 15,
               ),
-              ForgotPasswordForm(),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                decoration:
+                    BoxDecoration(color: Color.fromRGBO(179, 160, 255, 1)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FormInput(
+                          controller: email,
+                          label: 'Enter your email address',
+                          placeholder: 'example@example.com',
+                          isPassword: false),
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               SizedBox(
                 height: 15,
               ),
               Button(
-                  function: () => print('Aoba'),
+                  function: () => continueToReset(context),
                   isTransparent: false,
                   text: 'Continue'),
             ],

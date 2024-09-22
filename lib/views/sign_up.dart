@@ -2,10 +2,52 @@ import 'package:flutter/material.dart';
 import 'package:prova_p1_mobile/ui-components/auth_footer.dart';
 import 'package:prova_p1_mobile/ui-components/auth_header.dart';
 import 'package:prova_p1_mobile/ui-components/button.dart';
-import 'package:prova_p1_mobile/ui-components/sing_up_form.dart';
+import 'package:prova_p1_mobile/ui-components/form_input.dart';
+import 'package:prova_p1_mobile/utils/user.dart';
+import 'package:prova_p1_mobile/utils/vailidators.dart';
+import 'package:prova_p1_mobile/views/login.dart';
+import 'package:prova_p1_mobile/utils/vailidators.dart';
 
 class SignUp extends StatelessWidget {
-  const SignUp({super.key});
+  TextEditingController fullName = TextEditingController(text: '');
+  TextEditingController email = TextEditingController(text: '');
+  TextEditingController password = TextEditingController(text: '');
+  TextEditingController confirmPassword = TextEditingController(text: '');
+  User user = User();
+  SignUp({super.key});
+
+  bool validateEmail() {
+    return validEmail(email.text) && email.text.isNotEmpty;
+  }
+
+  void createUser(context) async {
+    if (validateEmail() &&
+        password.text.isNotEmpty &&
+        fullName.text.isNotEmpty &&
+        confirmPassword.text.isNotEmpty) {
+      user.saveUser(fullName.text, email.text, password.text);
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Credenciais inválidas'),
+          content: Text(
+              'Por favor, insira valores válidos para poder criar seu usuário'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +81,52 @@ class SignUp extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 AuthHeader(pageTitle: "Let's Start!"),
-                SignUpForm(),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration:
+                      BoxDecoration(color: Color.fromRGBO(179, 160, 255, 1)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FormInput(
+                          controller: fullName,
+                          label: 'Full name',
+                          placeholder: 'Your Name...',
+                          isPassword: false,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        FormInput(
+                          controller: email,
+                          label: 'Email',
+                          placeholder: 'example@example.com',
+                          isPassword: false,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        FormInput(
+                          controller: password,
+                          label: 'Password',
+                          placeholder: '*************',
+                          isPassword: true,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        FormInput(
+                          controller: confirmPassword,
+                          label: 'Confirm Password',
+                          placeholder: '*************',
+                          isPassword: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: 15,
                 ),
@@ -52,7 +139,7 @@ class SignUp extends StatelessWidget {
                   height: 15,
                 ),
                 Button(
-                    function: () => print('Aoba'),
+                    function: () => createUser(context),
                     isTransparent: false,
                     text: 'Sign Up'),
                 SizedBox(
@@ -62,10 +149,27 @@ class SignUp extends StatelessWidget {
                 SizedBox(
                   height: 15,
                 ),
-                Text(
-                  'Already have an account? Log in',
-                  style: TextStyle(color: Colors.white),
-                  textAlign: TextAlign.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Already have an account?',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w300),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Text(
+                        'Log in',
+                        style: TextStyle(
+                            color: Color.fromRGBO(226, 241, 99, 1),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300),
+                      ),
+                    ),
+                  ],
                 )
               ],
             ),

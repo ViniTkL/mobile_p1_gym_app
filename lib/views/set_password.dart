@@ -3,11 +3,14 @@ import 'package:prova_p1_mobile/ui-components/auth_footer.dart';
 import 'package:prova_p1_mobile/ui-components/auth_header.dart';
 import 'package:prova_p1_mobile/ui-components/button.dart';
 import 'package:prova_p1_mobile/ui-components/forgot_password_form.dart';
+import 'package:prova_p1_mobile/ui-components/form_input.dart';
 import 'package:prova_p1_mobile/ui-components/set_password_form.dart';
-import 'package:prova_p1_mobile/ui-components/sing_up_form.dart';
+import 'package:prova_p1_mobile/views/login.dart';
 
 class SetPassword extends StatelessWidget {
-  const SetPassword({super.key});
+  TextEditingController password = TextEditingController(text: '');
+  TextEditingController confirmPassword = TextEditingController(text: '');
+  SetPassword({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,7 @@ class SetPassword extends StatelessWidget {
               )),
         ),
         body: SizedBox(
-          height: MediaQuery.of(context).size.height*0.6,
+          height: MediaQuery.of(context).size.height * 0.6,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -51,12 +54,38 @@ class SetPassword extends StatelessWidget {
               SizedBox(
                 height: 15,
               ),
-              SetPasswordForm(),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                decoration:
+                    BoxDecoration(color: Color.fromRGBO(179, 160, 255, 1)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FormInput(
+                          controller: password,
+                          label: 'Password',
+                          placeholder: '*************',
+                          isPassword: true),
+                      FormInput(
+                          controller: confirmPassword,
+                          label: 'Confirm Password',
+                          placeholder: '*************',
+                          isPassword: true),
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               SizedBox(
                 height: 15,
               ),
               Button(
-                  function: () => print('Aoba'),
+                  function: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Login())),
                   isTransparent: false,
                   text: 'Reset Password'),
             ],
