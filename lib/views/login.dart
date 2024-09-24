@@ -3,7 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:prova_p1_mobile/ui-components/auth_footer.dart';
 import 'package:prova_p1_mobile/ui-components/auth_header.dart';
 import 'package:prova_p1_mobile/ui-components/button.dart';
+import 'package:prova_p1_mobile/ui-components/dialog.dart';
 import 'package:prova_p1_mobile/ui-components/form_input.dart';
+import 'package:prova_p1_mobile/utils/auth.dart';
 import 'package:prova_p1_mobile/utils/vailidators.dart';
 import 'package:prova_p1_mobile/views/forgot_password.dart';
 import 'package:prova_p1_mobile/views/sign_up.dart';
@@ -11,33 +13,46 @@ import 'package:prova_p1_mobile/views/sign_up.dart';
 class Login extends StatelessWidget {
   final TextEditingController password = TextEditingController(text: '');
   final TextEditingController email = TextEditingController(text: '');
+  Auth user = Auth();
   Login({super.key});
 
   bool emailValidator(TextEditingController email) {
     return validEmail(email.text) && email.text.isNotEmpty;
   }
 
-  void login(context) {
+  Future<bool> verifyCredentials() async {
     if (emailValidator(email) && password.text.isNotEmpty) {
-      print('Deu bom');
+      String? userEmail = await user.getEmail();
+      String? userPass = await user.getPass();
+      return email.text == userEmail && password.text == userPass;
+    }
+
+    return false;
+  }
+
+  void login(context) async {
+    if (emailValidator(email) &&
+        password.text.isNotEmpty &&
+        await verifyCredentials()) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return MyDialog(
+            isAlert: false,
+            title: 'Usuário autenticado com sucesso',
+          );
+        },
+      );
       return;
     }
 
-    print('Não deu bom');
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Credenciais inválidas'),
-          content: Text('Pro favor, tente novamente'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Fechar'),
-            ),
-          ],
+        return MyDialog(
+          isAlert: true,
+          title: 'Credenciais inválidas',
+          subtitle: 'Por favor, tente novamente!',
         );
       },
     );
@@ -89,7 +104,7 @@ class Login extends StatelessWidget {
                           controller: email,
                           label: 'Username or email',
                           placeholder: 'example@example.com',
-                          isPassword: true),
+                          isPassword: false),
                       SizedBox(
                         height: 20,
                       ),
@@ -131,7 +146,7 @@ class Login extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Don\'t have an account?',
+                    'Don\'t have an account? ',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,

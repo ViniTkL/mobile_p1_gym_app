@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prova_p1_mobile/views/forgot_password.dart';
-import 'package:prova_p1_mobile/views/launch.dart';
-import 'package:prova_p1_mobile/views/login.dart';
 import 'package:prova_p1_mobile/views/on_boarding.dart';
-import 'package:prova_p1_mobile/views/set_password.dart';
-import 'package:prova_p1_mobile/views/sign_up.dart';
 
 void main() {
   runApp(const MyApp());

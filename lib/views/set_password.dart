@@ -1,16 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:prova_p1_mobile/ui-components/auth_footer.dart';
 import 'package:prova_p1_mobile/ui-components/auth_header.dart';
 import 'package:prova_p1_mobile/ui-components/button.dart';
-import 'package:prova_p1_mobile/ui-components/forgot_password_form.dart';
+import 'package:prova_p1_mobile/ui-components/dialog.dart';
 import 'package:prova_p1_mobile/ui-components/form_input.dart';
-import 'package:prova_p1_mobile/ui-components/set_password_form.dart';
+import 'package:prova_p1_mobile/utils/auth.dart';
 import 'package:prova_p1_mobile/views/login.dart';
 
 class SetPassword extends StatelessWidget {
   TextEditingController password = TextEditingController(text: '');
   TextEditingController confirmPassword = TextEditingController(text: '');
+  Auth user = Auth();
   SetPassword({super.key});
+
+  bool verifyPassword() {
+    if (confirmPassword.text.isNotEmpty && password.text.isNotEmpty)
+      return password.text == confirmPassword.text;
+
+    return false;
+  }
+
+  void setNewPassword(context) {
+    if (verifyPassword()) {
+      user.setPassword(password.text);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MyDialog(
+            isAlert: true,
+            title: 'Senhas devem coincidir!',
+            subtitle:
+                'Por favor, coloque a mesma senha em ambos os campo para prosseguir.');
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +110,7 @@ class SetPassword extends StatelessWidget {
                 height: 15,
               ),
               Button(
-                  function: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Login())),
+                  function: () => setNewPassword(context),
                   isTransparent: false,
                   text: 'Reset Password'),
             ],

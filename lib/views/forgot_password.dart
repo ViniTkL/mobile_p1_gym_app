@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:prova_p1_mobile/ui-components/auth_footer.dart';
 import 'package:prova_p1_mobile/ui-components/auth_header.dart';
 import 'package:prova_p1_mobile/ui-components/button.dart';
-import 'package:prova_p1_mobile/ui-components/forgot_password_form.dart';
+import 'package:prova_p1_mobile/ui-components/dialog.dart';
 import 'package:prova_p1_mobile/ui-components/form_input.dart';
+import 'package:prova_p1_mobile/utils/auth.dart';
 import 'package:prova_p1_mobile/utils/vailidators.dart';
 import 'package:prova_p1_mobile/views/set_password.dart';
 
 class ForgotPassword extends StatelessWidget {
   TextEditingController email = TextEditingController(text: '');
+  Auth user = Auth();
   ForgotPassword({super.key});
 
-  void continueToReset(context){
+  Future<bool> validateUserEmail() async {
     if(validEmail(email.text) && email.text.isNotEmpty){
+      String? userEmail = await user.getEmail();
+      return email.text == userEmail;
+    }
+
+    return false;
+  }
+
+  void continueToReset(context) async {
+    if(await validateUserEmail()){
       Navigator.push(context,
         MaterialPageRoute(builder: (context) => SetPassword()));
       return;
@@ -21,18 +31,7 @@ class ForgotPassword extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('E-mail inválido'),
-          content: Text('Por favor, insira um email válido'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Fechar'),
-            ),
-          ],
-        );
+        return MyDialog(isAlert: true, title: 'E-mail inválido', subtitle: 'Por favor, insira um email válido');
       },
     );
   }

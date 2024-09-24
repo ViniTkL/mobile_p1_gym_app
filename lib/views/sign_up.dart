@@ -2,49 +2,52 @@ import 'package:flutter/material.dart';
 import 'package:prova_p1_mobile/ui-components/auth_footer.dart';
 import 'package:prova_p1_mobile/ui-components/auth_header.dart';
 import 'package:prova_p1_mobile/ui-components/button.dart';
+import 'package:prova_p1_mobile/ui-components/dialog.dart';
 import 'package:prova_p1_mobile/ui-components/form_input.dart';
-import 'package:prova_p1_mobile/utils/user.dart';
+import 'package:prova_p1_mobile/utils/auth.dart';
 import 'package:prova_p1_mobile/utils/vailidators.dart';
 import 'package:prova_p1_mobile/views/login.dart';
-import 'package:prova_p1_mobile/utils/vailidators.dart';
 
 class SignUp extends StatelessWidget {
   TextEditingController fullName = TextEditingController(text: '');
   TextEditingController email = TextEditingController(text: '');
   TextEditingController password = TextEditingController(text: '');
   TextEditingController confirmPassword = TextEditingController(text: '');
-  User user = User();
+  Auth user = Auth();
   SignUp({super.key});
 
   bool validateEmail() {
     return validEmail(email.text) && email.text.isNotEmpty;
   }
 
+  bool validatePassword() {
+    if (confirmPassword.text.isNotEmpty && password.text.isNotEmpty)
+      return confirmPassword.text == password.text;
+    return false;
+  }
+
   void createUser(context) async {
-    if (validateEmail() &&
-        password.text.isNotEmpty &&
-        fullName.text.isNotEmpty &&
-        confirmPassword.text.isNotEmpty) {
+    if (validateEmail() && validatePassword() && fullName.text.isNotEmpty) {
       user.saveUser(fullName.text, email.text, password.text);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return MyDialog(
+              isAlert: false, title: 'Usuário registrado com sucesso :)!!!');
+        },
+      );
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
       return;
     }
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Credenciais inválidas'),
-          content: Text(
-              'Por favor, insira valores válidos para poder criar seu usuário'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Fechar'),
-            ),
-          ],
-        );
+        return MyDialog(
+            isAlert: true,
+            title: 'Credenciais inválidas',
+            subtitle:
+                'Por favor, insira valores válidos para poder criar seu usuário');
       },
     );
   }
@@ -153,7 +156,7 @@ class SignUp extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Already have an account?',
+                      'Already have an account? ',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 14,
