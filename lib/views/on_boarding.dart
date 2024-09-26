@@ -11,7 +11,12 @@ class OnBoarding extends StatefulWidget {
   State<OnBoarding> createState() => _OnBoardingState();
 }
 
-class _OnBoardingState extends State<OnBoarding> {
+class _OnBoardingState extends State<OnBoarding> with TickerProviderStateMixin {
+  late PageController _pageViewController;
+  late TabController _tabController;
+  bool showLogo = true;
+  int _currentPageIndex = 0;
+
   List<String> imagesBg = [
     'beautiful-young-sporty-woman-training-workout-gym 3.png',
     'on_board_a.png',
@@ -19,13 +24,9 @@ class _OnBoardingState extends State<OnBoarding> {
     'on_board_c.png'
   ];
 
-  int indexImage = 0;
-
   void nextImage() {
     setState(() {
-      if (indexImage + 1 <= 3)
-        indexImage++;
-      else
+      if (_currentPageIndex + 1 == 3)
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Login()));
     });
@@ -34,42 +35,130 @@ class _OnBoardingState extends State<OnBoarding> {
   @override
   void initState() {
     super.initState();
+    _pageViewController = PageController();
+    _tabController = TabController(length: 3, vsync: this);
     Future.delayed(Durations.extralong4, () {
       setState(() {
-        indexImage++;
+        showLogo = false;
       });
     });
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _pageViewController.dispose();
+    _tabController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Container(
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('assets/${imagesBg[indexImage]}'),
-                fit: BoxFit.cover),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              indexImage == 0 ? Logo() : Carousel(index: indexImage),
-              SizedBox(
-                height: 20,
-              ),
-              indexImage > 0
-                  ? Button(
-                      function: () => nextImage(),
-                      text: indexImage == 3 ? 'Get Started' : 'Next',
-                      isTransparent: true)
-                  : Text(''),
-            ],
-          )),
-    ));
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: <Widget>[
+        showLogo
+            ? Center(
+                child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(
+                            "assets/beautiful-young-sporty-woman-training-workout-gym 3.png"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: Logo()),
+              )
+            : PageView(
+                controller: _pageViewController,
+                onPageChanged: _handlePageViewChanged,
+                children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/on_board_a.png"),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Center(
+                        child: Carousel(index: _currentPageIndex),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/on_board_b.png"),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Center(
+                        child: Carousel(index: _currentPageIndex),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/on_board_c.png"),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Center(
+                        child: Carousel(index: _currentPageIndex),
+                      ),
+                    ),
+                  ]),
+        PageIndicator(
+          currentPageIndex: _currentPageIndex,
+          tabController: _tabController,
+          onUpdateCurrentPageIndex: _handlePageViewChanged,
+          handleNextPage: _nextPage,
+        ),
+      ],
+    );
+  }
+
+  void _nextPage() {
+    _pageViewController.animateToPage((_currentPageIndex + 1) % 3,
+        duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+  }
+
+  void _handlePageViewChanged(int currentPageIndex) {
+    _tabController.index = currentPageIndex % 3;
+    setState(() {
+      _currentPageIndex = currentPageIndex % 3;
+    });
   }
 }
+
+// @override
+// Widget build(BuildContext context) {
+//   return
+
+//   // Scaffold(
+//   //     body: SingleChildScrollView(
+//   //   child: Container(
+//   //       height: MediaQuery.of(context).size.height,
+//   //       decoration: BoxDecoration(
+//   //         image: DecorationImage(
+//   //             image: AssetImage('assets/${imagesBg[indexImage]}'),
+//   //             fit: BoxFit.cover),
+//   //       ),
+//   //       child: Column(
+//   //         mainAxisAlignment: MainAxisAlignment.center,
+//   //         children: [
+//   //           indexImage == 0 ? Logo() : Carousel(index: indexImage),
+//   //           SizedBox(
+//   //             height: 20,
+//   //           ),
+//   //           indexImage > 0
+//   //               ? Button(
+//   //                   function: () => nextImage(),
+//   //                   text: indexImage == 3 ? 'Get Started' : 'Next',
+//   //                   isTransparent: true)
+//   //               : Text(''),
+//   //         ],
+//   //       )),
+//   // ));
+// }
 
 class Logo extends StatelessWidget {
   const Logo({super.key});
@@ -124,12 +213,12 @@ class _CarouselState extends State<Carousel> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset(iconCarousel[widget.index - 1]),
+          SvgPicture.asset(iconCarousel[widget.index]),
           SizedBox(
             height: 10,
           ),
           Text(
-            textMessage[widget.index - 1],
+            textMessage[widget.index],
             style: const TextStyle(
               color: Color.fromRGBO(255, 255, 255, 1),
               fontWeight: FontWeight.w700,
@@ -137,6 +226,41 @@ class _CarouselState extends State<Carousel> {
             ),
             textAlign: TextAlign.center,
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class PageIndicator extends StatelessWidget {
+  const PageIndicator({
+    super.key,
+    required this.tabController,
+    required this.currentPageIndex,
+    required this.onUpdateCurrentPageIndex,
+    required this.handleNextPage,
+  });
+
+  final int currentPageIndex;
+  final TabController tabController;
+  final void Function(int) onUpdateCurrentPageIndex;
+  final void Function() handleNextPage;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          TabPageSelector(
+            controller: tabController,
+            color: colorScheme.surface,
+            selectedColor: colorScheme.primary,
+          ),
+          TextButton(onPressed: handleNextPage, child: Text("NEXT"))
         ],
       ),
     );
