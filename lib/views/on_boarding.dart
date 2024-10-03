@@ -141,38 +141,6 @@ class _OnBoardingState extends State<OnBoarding> with TickerProviderStateMixin {
     });
   }
 }
-
-// @override
-// Widget build(BuildContext context) {
-//   return
-
-//   // Scaffold(
-//   //     body: SingleChildScrollView(
-//   //   child: Container(
-//   //       height: MediaQuery.of(context).size.height,
-//   //       decoration: BoxDecoration(
-//   //         image: DecorationImage(
-//   //             image: AssetImage('assets/${imagesBg[indexImage]}'),
-//   //             fit: BoxFit.cover),
-//   //       ),
-//   //       child: Column(
-//   //         mainAxisAlignment: MainAxisAlignment.center,
-//   //         children: [
-//   //           indexImage == 0 ? Logo() : Carousel(index: indexImage),
-//   //           SizedBox(
-//   //             height: 20,
-//   //           ),
-//   //           indexImage > 0
-//   //               ? Button(
-//   //                   function: () => nextImage(),
-//   //                   text: indexImage == 3 ? 'Get Started' : 'Next',
-//   //                   isTransparent: true)
-//   //               : Text(''),
-//   //         ],
-//   //       )),
-//   // ));
-// }
-
 class Logo extends StatelessWidget {
   const Logo({super.key});
 
