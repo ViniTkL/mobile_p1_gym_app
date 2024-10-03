@@ -57,17 +57,21 @@ class _OnBoardingState extends State<OnBoarding> with TickerProviderStateMixin {
       alignment: Alignment.bottomCenter,
       children: <Widget>[
         showLogo
-            ? Center(
-                child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                            "assets/beautiful-young-sporty-woman-training-workout-gym 3.png"),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: Logo()),
-              )
+            ? Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        "assets/beautiful-young-sporty-woman-training-workout-gym 3.png"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Logo(),
+                  ],
+                ))
             : PageView(
                 controller: _pageViewController,
                 onPageChanged: _handlePageViewChanged,
@@ -106,12 +110,20 @@ class _OnBoardingState extends State<OnBoarding> with TickerProviderStateMixin {
                       ),
                     ),
                   ]),
-        PageIndicator(
-          currentPageIndex: _currentPageIndex,
-          tabController: _tabController,
-          onUpdateCurrentPageIndex: _handlePageViewChanged,
-          handleNextPage: _nextPage,
-        ),
+        if (!showLogo)
+          Stack(
+            children: [
+              Positioned(
+              bottom: MediaQuery.of(context).size.height*0.3,
+              right: MediaQuery.of(context).size.width-219*1.5,
+              child: PageIndicator(
+                currentPageIndex: _currentPageIndex,
+                tabController: _tabController,
+                onUpdateCurrentPageIndex: _handlePageViewChanged,
+                handleNextPage: _nextPage,
+              ),
+            ),]
+          ),
       ],
     );
   }
@@ -119,6 +131,7 @@ class _OnBoardingState extends State<OnBoarding> with TickerProviderStateMixin {
   void _nextPage() {
     _pageViewController.animateToPage((_currentPageIndex + 1) % 3,
         duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+    nextImage();
   }
 
   void _handlePageViewChanged(int currentPageIndex) {
@@ -207,7 +220,7 @@ class _CarouselState extends State<Carousel> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 600,
+      width: MediaQuery.of(context).size.width,
       height: 170,
       decoration: BoxDecoration(color: Color.fromRGBO(179, 160, 255, 1)),
       child: Column(
@@ -252,15 +265,17 @@ class PageIndicator extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
         children: <Widget>[
           TabPageSelector(
             controller: tabController,
             color: colorScheme.surface,
             selectedColor: colorScheme.primary,
           ),
-          TextButton(onPressed: handleNextPage, child: Text("NEXT"))
+          Button(
+              function: handleNextPage,
+              text: tabController.index == 2 ? "Get Started" : "Next",
+              isTransparent: true)
         ],
       ),
     );
