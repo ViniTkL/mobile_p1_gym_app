@@ -62,8 +62,7 @@ class ForgotPassword extends StatelessWidget {
                 color: Color.fromRGBO(226, 241, 99, 1),
               )),
         ),
-        body: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.5,
+        body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

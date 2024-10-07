@@ -114,8 +114,8 @@ class _OnBoardingState extends State<OnBoarding> with TickerProviderStateMixin {
           Stack(
             children: [
               Positioned(
-              bottom: MediaQuery.of(context).size.height*0.3,
-              right: MediaQuery.of(context).size.width-219*1.5,
+              bottom: MediaQuery.of(context).size.height/2 - 140,
+              left: MediaQuery.of(context).size.width/2 - 219/2,
               child: PageIndicator(
                 currentPageIndex: _currentPageIndex,
                 tabController: _tabController,
